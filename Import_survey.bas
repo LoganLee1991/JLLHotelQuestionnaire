@@ -40,19 +40,22 @@ Public Sub getSummary()
     Dim surveybookName As String
     Dim summarybookName As String
     Dim surveyBook As Workbook
-    Dim summaryBook As Workbook
+    Dim summarybook As Workbook
     Dim surveySheet As Worksheet
     Dim summarySheet As Worksheet
     
-    Set summaryBook = ActiveWorkbook
+    Set summarybook = ActiveWorkbook
     Set summarySheet = ActiveWorkbook.Worksheets("Summary")
+    summarybookName = summarybook.Name
     'MsgBox "summarybook name:" & summarybookName
     
     Dim filePath As String
     Dim x As Variant
     
+    On Error GoTo ErrorHandler
+    
     For x = LBound(fileName) To UBound(fileName)
-            
+           
         Workbooks.Open fileName:=fileName(x), UpdateLinks:=0
         filePath = fileName(x) 'get file's path
         surveybookName = ActiveWorkbook.Name
@@ -616,10 +619,13 @@ Public Sub getSummary()
         benchCell.Offset(0, 491) = Right(explain17, Len(explain17) - Len("ว๋หตร๗:"))
         '-------------------------------------------------------------
         'MsgBox "active workbook is" & surveybookName
-        surveyBook.Close
-        
-        
-        
-    Next x
+        surveyBook.Close savechanges:=False
+    Next
     summarySheet.Activate
+    MsgBox "Transform success!"
+    Exit Sub
+    
+ErrorHandler:
+        Workbooks(summarybookName).Worksheets("error").Range("a65536").End(xlUp).Offset(1, 0) = surveyBook.Name
+        Resume
 End Sub
