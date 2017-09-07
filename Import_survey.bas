@@ -52,7 +52,7 @@ Public Sub getSummary()
     Dim filePath As String
     Dim x As Variant
     
-    On Error GoTo ErrorHandler
+    On Error Resume Next
     
     For x = LBound(fileName) To UBound(fileName)
            
@@ -620,12 +620,10 @@ Public Sub getSummary()
         '-------------------------------------------------------------
         'MsgBox "active workbook is" & surveybookName
         surveyBook.Close savechanges:=False
+        Set surveyBook = Nothing
+        
     Next
     summarySheet.Activate
     MsgBox "Transform success!"
-    Exit Sub
-    
-ErrorHandler:
-        Workbooks(summarybookName).Worksheets("error").Range("a65536").End(xlUp).Offset(1, 0) = surveyBook.Name
-        Resume
+
 End Sub
